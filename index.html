@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV App Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #4a5568;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #63b3ed 0%, #4299e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #2d3748;
+            border-radius: 30px;
+            padding: 8px 20px;
+            width: 300px;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: #e2e8f0;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+        }
+        
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .category {
+            background: #2d3748;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .category:hover, .category.active, .category:focus {
+            background: #4299e1;
+            transform: scale(1.05);
+        }
+        
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .app-card {
+            background: #2d3748;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .app-card:focus {
+            outline: 3px solid #4299e1;
+            transform: scale(1.05);
+        }
+        
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .app-image {
+            width: 100%;
+            height: 140px;
+            background: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #63b3ed;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .app-info {
+            padding: 15px;
+        }
+        
+        .app-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .app-info p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .app-info .rating {
+            color: #f6e05e;
+            margin-bottom: 15px;
+        }
+        
+        .install-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .install-btn:hover, .install-btn:focus {
+            background: #3182ce;
+            outline: none;
+        }
+        
+        .app-detail {
+            display: none;
+            background: #2d3748;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .app-detail.active {
+            display: block;
+        }
+        
+        .app-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            background: #4a5568;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #63b3ed;
+            background-size: cover;
+            flex-shrink: 0;
+        }
+        
+        .app-title {
+            flex: 1;
+        }
+        
+        .app-title h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .app-title p {
+            color: #a0aec0;
+            margin-bottom: 15px;
+        }
+        
+        .screenshots {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .screenshot {
+            width: 300px;
+            height: 180px;
+            background: #4a5568;
+            border-radius: 10px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .detail-install {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .detail-install:hover, .detail-install:focus {
+            background: #3182ce;
+            outline: none;
+        }
+        
+        .back-btn {
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover, .back-btn:focus {
+            background: #5a6578;
+            outline: none;
+        }
+        
+        .remote-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .key {
+            background: #4a5568;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #a0aec0;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #fc8181;
+            background: #2d3748;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .app-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .app-header {
+                flex-direction: column;
+            }
+            
+            .app-icon {
+                align-self: center;
+            }
+        }
+        
+        /* Focus styles for remote navigation */
+        *:focus {
+            outline: 3px solid #4299e1;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4299e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="app-icon"><i class="fas fa-tv"></i></div>
+                <h1>TV App Store</h1>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search apps..." id="searchInput">
+            </div>
+        </header>
+        
+        <button class="back-btn" id="backBtn" style="display: none;">
+            <i class="fas fa-arrow-left"></i> Back to Apps
+        </button>
+        
+        <div class="categories">
+            <div class="category active" data-category="all">All Apps</div>
+            <div class="category" data-category="entertainment">Entertainment</div>
+            <div class="category" data-category="games">Games</div>
+            <div class="category" data-category="utilities">Utilities</div>
+            <div class="category" data-category="sports">Sports</div>
+            <div class="category" data-category="news">News</div>
+            <div class="category" data-category="music">Music</div>
+        </div>
+        
+        <div class="app-grid" id="appGrid">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading apps...
+            </div>
+        </div>
+        
+        <div class="app-detail" id="appDetail">
+            <!-- App detail will be shown here -->
+        </div>
+        
+        <div class="remote-hint">
+            <span>Remote Control:</span>
+            <span><span class="key">↑↓←→</span> Navigate</span>
+            <span><span class="key">OK</span> Select</span>
+            <span><span class="key">Back</span> Return</span>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const GITHUB_USERNAME = 'yourusername'; // Replace with your GitHub username
+        const REPO_NAME = 'your-repo-name'; // Replace with your repository name
+        const APPS_DIRECTORY = 'apps'; // Directory where apps are stored
+        
+        // GitHub API base URL
+        const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${APPS_DIRECTORY}`;
+        
+        // Store apps data
+        let apps = [];
+        let currentApp = null;
+        
+        // DOM elements
+        const appGrid = document.getElementById('appGrid');
+        const appDetail = document.getElementById('appDetail');
+        const backBtn = document.getElementById('backBtn');
+        const searchInput = document.getElementById('searchInput');
+        const categories = document.querySelectorAll('.category');
+        
+        // Fetch app data from GitHub
+        async function fetchApps() {
+            try {
+                appGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading apps...</div>';
+                
+                const response = await fetch(GITHUB_API_BASE);
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const appFolders = data.filter(item => item.type === 'dir');
+                
+                if (appFolders.length === 0) {
+                    appGrid.innerHTML = '<div class="error">No apps found. Please check your repository structure.</div>';
+                    return;
+                }
+                
+                // Fetch details for each app
+                apps = await Promise.all(
+                    appFolders.map(async folder => {
+                        try {
+                            const appName = folder.name;
+                            const appResponse = await fetch(folder.url);
+                            const appData = await appResponse.json();
+                            
+                            // Find files in the app folder
+                            const files = appData.reduce((acc, file) => {
+                                if (file.name === 'description.txt') acc.descriptionFile = file;
+                                if (file.name === 'app.apk') acc.apkFile = file;
+                                if (file.name.startsWith('screenshot') && (file.name.endsWith('.png') || file.name.endsWith('.jpg'))) {
+                                    if (!acc.screenshots) acc.screenshots = [];
+                                    acc.screenshots.push(file);
+                                }
+                                if (file.name === 'logo.png' || file.name === 'logo.jpg') acc.logoFile = file;
+                                if (file.name === 'metadata.json') acc.metadataFile = file;
+                                return acc;
+                            }, {});
+                            
+                            // Get description
+                            let description = 'No description available';
+                            if (files.descriptionFile) {
+                                const descResponse = await fetch(files.descriptionFile.download_url);
+                                description = await descResponse.text();
+                            }
+                            
+                            // Get metadata if available
+                            let category = 'Utilities';
+                            let rating = 4.0;
+                            let color = '#4299e1';
+                            let icon = 'fas fa-mobile-alt';
+                            
+                            if (files.metadataFile) {
+                                try {
+                                    const metaResponse = await fetch(files.metadataFile.download_url);
+                                    const metadata = await metaResponse.json();
+                                    category = metadata.category || category;
+                                    rating = metadata.rating || rating;
+                                    color = metadata.color || color;
+                                    icon = metadata.icon || icon;
+                                } catch (e) {
+                                    console.error('Error parsing metadata:', e);
+                                }
+                            }
+                            
+                            return {
+                                id: appName.toLowerCase().replace(/\s+/g, '-'),
+                                name: appName,
+                                description,
+                                category,
+                                icon,
+                                color,
+                                rating,
+                                screenshots: files.screenshots ? files.screenshots.length : 0,
+                                logoUrl: files.logoFile ? files.logoFile.download_url : null,
+                                screenshotUrls: files.screenshots ? files.screenshots.map(s => s.download_url) : [],
+                                apkUrl: files.apkFile ? files.apkFile.download_url : null
+                            };
+                        } catch (e) {
+                            console.error(`Error loading app ${folder.name}:`, e);
+                            return null;
+                        }
+                    })
+                );
+                
+                // Filter out any failed apps
+                apps = apps.filter(app => app !== null);
+                
+                if (apps.length === 0) {
+                    appGrid.innerHTML = '<div class="error">Error loading apps. Please check the console for details.</div>';
+                    return;
+                }
+                
+                renderApps(apps);
+            } catch (error) {
+                console.error('Error fetching apps:', error);
+                appGrid.innerHTML = `
+                    <div class="error">
+                        <h3>Error Loading Apps</h3>
+                        <p>Could not fetch app data from GitHub. Please check:</p>
+                        <ul>
+                            <li>Your GitHub username and repository name are correct</li>
+                            <li>The repository is public</li>
+                            <li>You have an "apps" directory with app folders</li>
+                        </ul>
+                        <p>See console for technical details.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Generate app cards
+        function renderApps(appsToRender) {
+            appGrid.innerHTML = '';
+            
+            if (appsToRender.length === 0) {
+                appGrid.innerHTML = '<div class="error">No apps found matching your criteria.</div>';
+                return;
+            }
+            
+            appsToRender.forEach(app => {
+                const stars = '★'.repeat(Math.floor(app.rating)) + '☆'.repeat(5 - Math.floor(app.rating));
+                
+                const appCard = document.createElement('div');
+                appCard.className = 'app-card';
+                appCard.tabIndex = 0;
+                appCard.dataset.appId = app.id;
+                
+                // Use logo if available, otherwise use icon
+                const appImageStyle = app.logoUrl ? 
+                    `background-image: url('${app.logoUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: ${app.color};` : 
+                    `background: ${app.color};`;
+                
+                appCard.innerHTML = `
+                    <div class="app-image" style="${appImageStyle}">
+                        ${app.logoUrl ? '' : `<i class="${app.icon}"></i>`}
+                    </div>
+                    <div class="app-info">
+                        <h3>${app.name}</h3>
+                        <p>${app.description.substring(0, 80)}...</p>
+                        <div class="rating">${stars} ${app.rating.toFixed(1)}</div>
+                        <button class="install-btn">Install</button>
+                    </div>
+                `;
+                
+                appCard.addEventListener('click', () => showAppDetail(app));
+                appCard.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        showAppDetail(app);
+                    }
+                });
+                
+                appGrid.appendChild(appCard);
+            });
+            
+            // Make the first app card focusable
+            if (appGrid.firstChild) {
+                appGrid.firstChild.focus();
+            }
+        }
+        
+        // Show app detail view
+        function showAppDetail(app) {
+            currentApp = app;
+            const categoriesEl = document.querySelector('.categories');
+            
+            appGrid.style.display = 'none';
+            categoriesEl.style.display = 'none';
+            appDetail.className = 'app-detail active';
+            backBtn.style.display = 'flex';
+            backBtn.focus();
+            
+            const stars = '★'.repeat(Math.floor(app.rating)) + '☆'.repeat(5 - Math.floor(app.rating));
+            
+            // Generate screenshot placeholders or actual screenshots
+            let screenshotsHtml = '';
+            if (app.screenshotUrls.length > 0) {
+                app.screenshotUrls.forEach(url => {
+                    screenshotsHtml += `<div class="screenshot" style="background-image: url('${url}')"></div>`;
+                });
+            } else {
+                for (let i = 0; i < 3; i++) {
+                    screenshotsHtml += `<div class="screenshot" style="background: ${app.color}"></div>`;
+                }
+            }
+            
+            // Use logo if available, otherwise use icon
+            const appIconStyle = app.logoUrl ? 
+                `background-image: url('${app.logoUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: ${app.color};` : 
+                `background: ${app.color};`;
+            
+            appDetail.innerHTML = `
+                <div class="app-header">
+                    <div class="app-icon" style="${appIconStyle}">
+                        ${app.logoUrl ? '' : `<i class="${app.icon}"></i>`}
+                    </div>
+                    <div class="app-title">
+                        <h2>${app.name}</h2>
+                        <p>${app.category} • ${app.rating.toFixed(1)}</p>
+                        <div class="rating">${stars}</div>
+                    </div>
+                </div>
+                
+                <div class="screenshots">
+                    ${screenshotsHtml}
+                </div>
+                
+                <div class="description">
+                    <h3>Description</h3>
+                    <p>${app.description}</p>
+                </div>
+                
+                <button class="detail-install" ${!app.apkUrl ? 'disabled' : ''}>
+                    ${app.apkUrl ? 'Install App' : 'App Not Available'}
+                </button>
+            `;
+            
+            // Add event listener to install button
+            const installBtn = appDetail.querySelector('.detail-install');
+            if (app.apkUrl) {
+                installBtn.addEventListener('click', () => {
+                    window.location.href = app.apkUrl;
+                });
+            }
+        }
+        
+        // Go back to app list
+        function goBackToList() {
+            const categoriesEl = document.querySelector('.categories');
+            
+            appGrid.style.display = 'grid';
+            categoriesEl.style.display = 'flex';
+            appDetail.className = 'app-detail';
+            backBtn.style.display = 'none';
+            
+            // Focus on the current app card if available
+            if (currentApp) {
+                const appCard = document.querySelector(`.app-card[data-app-id="${currentApp.id}"]`);
+                if (appCard) {
+                    appCard.focus();
+                }
+            }
+        }
+        
+        // Filter apps by category
+        function filterAppsByCategory(category) {
+            if (category === 'all') {
+                renderApps(apps);
+            } else {
+                const filteredApps = apps.filter(app => app.category.toLowerCase() === category);
+                renderApps(filteredApps);
+            }
+        }
+        
+        // Search apps
+        function searchApps(query) {
+            const filteredApps = apps.filter(app => 
+                app.name.toLowerCase().includes(query) || 
+                app.description.toLowerCase().includes(query) ||
+                app.category.toLowerCase().includes(query)
+            );
+            renderApps(filteredApps);
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fetch apps from GitHub
+            fetchApps();
+            
+            // Back button event
+            backBtn.addEventListener('click', goBackToList);
+            
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                searchApps(searchTerm);
+            });
+            
+            // Category filtering
+            categories.forEach(categoryEl => {
+                categoryEl.addEventListener('click', () => {
+                    categories.forEach(el => el.classList.remove('active'));
+                    categoryEl.classList.add('active');
+                    
+                    const category = categoryEl.dataset.category;
+                    filterAppsByCategory(category);
+                });
+                
+                // Add keyboard navigation for categories
+                categoryEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        categories.forEach(el => el.classList.remove('active'));
+                        categoryEl.classList.add('active');
+                        
+                        const category = categoryEl.dataset.category;
+                        filterAppsByCategory(category);
+                    }
+                });
+            });
+            
+            // Simulate remote control navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace') {
+                    goBackToList();
+                }
+            });
+            
+            // Make categories focusable
+            categories.forEach(cat => {
+                cat.setAttribute('tabindex', '0');
+            });
+        });
+    </script>
+</body>
+</html>
